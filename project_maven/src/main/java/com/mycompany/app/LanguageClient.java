@@ -12,7 +12,7 @@ public class LanguageClient implements org.eclipse.lsp4j.services.LanguageClient
 	public void telemetryEvent(Object object) {
 		// TODO Auto-generated method stub
 
-	}
+	} 
 
 	public void publishDiagnostics(PublishDiagnosticsParams diagnostics) {
 		// TODO Auto-generated method stub

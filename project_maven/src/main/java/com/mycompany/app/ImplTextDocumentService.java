@@ -1,9 +1,14 @@
 package com.mycompany.app;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.eclipse.lsp4j.CodeActionParams;
 import org.eclipse.lsp4j.CodeLens;
@@ -45,11 +50,35 @@ public class ImplTextDocumentService implements TextDocumentService {
 	}
 
 
+	
 	public CompletableFuture<Either<List<CompletionItem>, CompletionList>> completion(
 			TextDocumentPositionParams position) {
+		String url = position.getTextDocument().getUri();
+		if (!documents.containsKey(url)){
+			return null;		
+		}
+	
+		//DocumentText document = documents.get(url);
+        //int lineNumber = position.getPosition().getLine();
+		//int positionInLine = position.getPosition().getCharacter();
 		
-		return null;
+
+		Set<String> documetsSet = new HashSet<String>();
+		
+		for(DocumentText document : documents.values())
+		{
+			documetsSet.add(document.getText());
+		}
+		
+		return CompletableFuture.supplyAsync((Supplier<Either<List<CompletionItem>, CompletionList>>) () -> Either.forLeft(documetsSet.stream()
+				.map(word -> {
+					CompletionItem item = new CompletionItem();
+					item.setLabel(word);
+					item.setInsertText(word);
+					return item;
+				}).collect(Collectors.toList())));
 	}
+	
 
 	public CompletableFuture<CompletionItem> resolveCompletionItem(CompletionItem unresolved) {
 		
@@ -57,6 +86,7 @@ public class ImplTextDocumentService implements TextDocumentService {
 	}
 
 	public CompletableFuture<Hover> hover(TextDocumentPositionParams position) {
+			
 		
 		return null;
 	}
@@ -210,6 +240,10 @@ class DocumentText {
 	public void setText (String text){
 		this.text = text;
 		
+	}
+	public String getText()
+	{
+		return text;
 	}
 	
 	
