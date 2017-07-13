@@ -1,5 +1,7 @@
 package com.mycompany.app;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +29,8 @@ import org.eclipse.lsp4j.DocumentRangeFormattingParams;
 import org.eclipse.lsp4j.DocumentSymbolParams;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.Location;
+import org.eclipse.lsp4j.MarkedString;
+import org.eclipse.lsp4j.Range;
 import org.eclipse.lsp4j.ReferenceParams;
 import org.eclipse.lsp4j.RenameParams;
 import org.eclipse.lsp4j.SignatureHelp;
@@ -36,6 +40,7 @@ import org.eclipse.lsp4j.TextDocumentItem;
 import org.eclipse.lsp4j.TextDocumentPositionParams;
 import org.eclipse.lsp4j.TextEdit;
 import org.eclipse.lsp4j.WorkspaceEdit;
+import org.eclipse.lsp4j.jsonrpc.json.adapters.EitherTypeAdapterFactory;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
 
@@ -86,9 +91,25 @@ public class ImplTextDocumentService implements TextDocumentService {
 	}
 
 	public CompletableFuture<Hover> hover(TextDocumentPositionParams position) {
-			
-		
-		return null;
+		return CompletableFuture.supplyAsync(() -> {
+			String uri = position.getTextDocument().getUri();
+			DocumentText documentText = documents.get(uri);
+			TextDocumentModel textDocumentModel = documentText.getTextDocumentModel();
+			Hover hover = new Hover();
+
+			int linePosition = position.getPosition().getLine();
+			String lineText = textDocumentModel.getTextAtLine(linePosition);
+
+			List<Either<String, MarkedString>> contents = new ArrayList<>();
+
+			Either<String, MarkedString> content = Either.forLeft(lineText);
+
+			contents.add(content);
+
+			hover.setContents(contents);
+
+			return hover;
+		});
 	}
 
 	public CompletableFuture<SignatureHelp> signatureHelp(TextDocumentPositionParams position) {
@@ -97,7 +118,17 @@ public class ImplTextDocumentService implements TextDocumentService {
 	}
 
 	public CompletableFuture<List<? extends Location>> definition(TextDocumentPositionParams position) {
-		// TODO Auto-generated method stub
+	    DocumentText documentText= documents.get(position.getTextDocument().getUri());
+	    TextDocumentModel textDocumentModel= documentText.getTextDocumentModel();
+	    
+	    
+	    int lineNumber;
+	    int positionAtLine;
+	    
+	    List<? extends Location> locations;
+	    
+	    
+		
 		return null;
 	}
 
@@ -232,10 +263,16 @@ public class ImplTextDocumentService implements TextDocumentService {
 // Stores the url and text of a TextDocument
 class DocumentText {
 	String url;
-	String text; 
+	String text;
+	TextDocumentModel textDocumentModel;
 	public  DocumentText(String url, String text){
 		this.url = url;
 		this.text = text;
+		try {
+			this.textDocumentModel= new TextDocumentModel(text);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	public void setText (String text){
 		this.text = text;
@@ -244,6 +281,9 @@ class DocumentText {
 	public String getText()
 	{
 		return text;
+	}
+	public TextDocumentModel getTextDocumentModel(){
+		return textDocumentModel;
 	}
 	
 	
