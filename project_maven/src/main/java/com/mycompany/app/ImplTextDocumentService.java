@@ -44,6 +44,7 @@ import org.eclipse.lsp4j.jsonrpc.json.adapters.EitherTypeAdapterFactory;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
 
+
 public class ImplTextDocumentService implements TextDocumentService {
 	
 	// Dictionary creation for store DocumentText
@@ -62,26 +63,10 @@ public class ImplTextDocumentService implements TextDocumentService {
 		if (!documents.containsKey(url)){
 			return null;		
 		}
-	
-		//DocumentText document = documents.get(url);
-        //int lineNumber = position.getPosition().getLine();
-		//int positionInLine = position.getPosition().getCharacter();
 		
-
-		Set<String> documetsSet = new HashSet<String>();
+		TextDocumentModel model = documents.get(url).getTextDocumentModel();
 		
-		for(DocumentText document : documents.values())
-		{
-			documetsSet.add(document.getText());
-		}
-		
-		return CompletableFuture.supplyAsync((Supplier<Either<List<CompletionItem>, CompletionList>>) () -> Either.forLeft(documetsSet.stream()
-				.map(word -> {
-					CompletionItem item = new CompletionItem();
-					item.setLabel(word);
-					item.setInsertText(word);
-					return item;
-				}).collect(Collectors.toList())));
+		return CompletableFuture.supplyAsync((Supplier<Either<List<CompletionItem>, CompletionList>>) () -> model.getCompletion(position));
 	}
 	
 
@@ -122,17 +107,16 @@ public class ImplTextDocumentService implements TextDocumentService {
 	    TextDocumentModel textDocumentModel= documentText.getTextDocumentModel();
 	    
 	    
-	    int lineNumber;
-	    int positionAtLine;
-	    
-	    List<? extends Location> locations;
-	    
+	   
 	    
 		
 		return null;
 	}
 
 	public CompletableFuture<List<? extends Location>> references(ReferenceParams params) {
+		
+		DocumentText documentText= documents.get(params.getTextDocument().getUri());
+	    TextDocumentModel textDocumentModel= documentText.getTextDocumentModel();
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -192,7 +176,8 @@ public class ImplTextDocumentService implements TextDocumentService {
 		
 		if (url!=null){
 			if (documents.containsKey(url)){
-				documents.get(url).setText(params.getTextDocument().getText());
+				DocumentText doc =documents.get(url);
+				doc.setText(params.getTextDocument().getText());
 			}
 			
 			else{
@@ -240,7 +225,7 @@ public class ImplTextDocumentService implements TextDocumentService {
 		
 	}
 
-	// 
+ 
 	public void didSave(DidSaveTextDocumentParams params) {
 		
 		String url = params.getTextDocument().getUri();
@@ -275,8 +260,7 @@ class DocumentText {
 		}
 	}
 	public void setText (String text){
-		this.text = text;
-		
+		this.text = text;	
 	}
 	public String getText()
 	{

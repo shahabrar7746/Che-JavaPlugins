@@ -7,6 +7,12 @@
   <version>1.0-SNAPSHOT</version>
   <name>project_maven</name>
   <url>http://maven.apache.org</url>
+  
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+</properties>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -21,5 +27,20 @@
     <version>0.2.0</version>
 </dependency>
     
+    <dependency>
+    <groupId>org.eclipse.jdt</groupId>
+    <artifactId>org.eclipse.jdt.core</artifactId>
+    <version>3.12.3</version>
+    
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.eclipse.jdt/ui -->
+<dependency>
+    <groupId>org.eclipse.jdt</groupId>
+    <artifactId>ui</artifactId>
+    <version>3.3.0-v20070607-0010</version>
+    
+</dependency>
+
   </dependencies>
 </project>
