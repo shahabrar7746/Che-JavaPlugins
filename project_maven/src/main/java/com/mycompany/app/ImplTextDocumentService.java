@@ -12,6 +12,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.lsp4j.CodeActionParams;
 import org.eclipse.lsp4j.CodeLens;
 import org.eclipse.lsp4j.CodeLensParams;
@@ -66,7 +68,13 @@ public class ImplTextDocumentService implements TextDocumentService {
 		
 		TextDocumentModel model = documents.get(url).getTextDocumentModel();
 		
-		return CompletableFuture.supplyAsync((Supplier<Either<List<CompletionItem>, CompletionList>>) () -> model.getCompletion(position));
+		return CompletableFuture.supplyAsync((Supplier<Either<List<CompletionItem>, CompletionList>>) () -> {
+			try {
+				return model.getCompletion(position);
+			} catch (JavaModelException e) {
+				return null;
+			}
+		});
 	}
 	
 
@@ -80,20 +88,13 @@ public class ImplTextDocumentService implements TextDocumentService {
 			String uri = position.getTextDocument().getUri();
 			DocumentText documentText = documents.get(uri);
 			TextDocumentModel textDocumentModel = documentText.getTextDocumentModel();
-			Hover hover = new Hover();
-
-			int linePosition = position.getPosition().getLine();
-			String lineText = textDocumentModel.getTextAtLine(linePosition);
-
-			List<Either<String, MarkedString>> contents = new ArrayList<>();
-
-			Either<String, MarkedString> content = Either.forLeft(lineText);
-
-			contents.add(content);
-
-			hover.setContents(contents);
-
-			return hover;
+			
+			try {
+				return textDocumentModel.getHover(position.getPosition().getLine(), position.getPosition().getCharacter());
+			} catch (CoreException | IOException e) {
+				return null;
+			}
+			
 		});
 	}
 
@@ -181,8 +182,14 @@ public class ImplTextDocumentService implements TextDocumentService {
 			}
 			
 			else{
-				DocumentText documentText = new DocumentText(url, params.getTextDocument().getText());
-				documents.put(url, documentText);
+				
+				try {
+					DocumentText documentText = new DocumentText(url, params.getTextDocument().getText());
+					documents.put(url, documentText);
+				} catch (JavaModelException e) {
+					
+				}
+				
 			}
 		}
 		
@@ -202,8 +209,12 @@ public class ImplTextDocumentService implements TextDocumentService {
 				documents.get(url).setText(change.getText());
 			}
 			else{
-				DocumentText documentText = new DocumentText(url,change.getText());
-				documents.put(url, documentText);
+				try {
+					DocumentText documentText = new DocumentText(url,change.getText());
+					documents.put(url, documentText);
+				} catch (JavaModelException e) {
+				}
+				
 			}
 				
 		}
@@ -236,8 +247,14 @@ public class ImplTextDocumentService implements TextDocumentService {
 			}
 			
 			else{
-				DocumentText documentText = new DocumentText(url, params.getText());
-				documents.put(url, documentText);
+				
+				try {
+					DocumentText documentText = new DocumentText(url, params.getText());
+					documents.put(url, documentText);
+				} catch (JavaModelException e) {
+					
+				}
+				
 			}
 		}
 		
@@ -250,14 +267,11 @@ class DocumentText {
 	String url;
 	String text;
 	TextDocumentModel textDocumentModel;
-	public  DocumentText(String url, String text){
+	public  DocumentText(String url, String text) throws JavaModelException{
 		this.url = url;
 		this.text = text;
-		try {
-			this.textDocumentModel= new TextDocumentModel(text);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.textDocumentModel= new TextDocumentModel(url);
+		
 	}
 	public void setText (String text){
 		this.text = text;	
