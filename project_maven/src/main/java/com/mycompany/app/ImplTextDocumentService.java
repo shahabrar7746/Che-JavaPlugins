@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.lsp4j.CodeActionParams;
 import org.eclipse.lsp4j.CodeLens;
 import org.eclipse.lsp4j.CodeLensParams;
@@ -45,6 +46,8 @@ import org.eclipse.lsp4j.WorkspaceEdit;
 import org.eclipse.lsp4j.jsonrpc.json.adapters.EitherTypeAdapterFactory;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
+
+import static org.eclipse.lsp4j.jsonrpc.CompletableFutures.computeAsync;
 
 
 public class ImplTextDocumentService implements TextDocumentService {
@@ -106,20 +109,28 @@ public class ImplTextDocumentService implements TextDocumentService {
 	public CompletableFuture<List<? extends Location>> definition(TextDocumentPositionParams position) {
 	    DocumentText documentText= documents.get(position.getTextDocument().getUri());
 	    TextDocumentModel textDocumentModel= documentText.getTextDocumentModel();
-	    
-	    
+	    try {
+			return (CompletableFuture<List<? extends Location>>) textDocumentModel.getDefinition(position.getPosition().getLine(), position.getPosition().getCharacter());
+		} catch (JavaModelException | BadLocationException exception ) {
+			return null;
+		} 
 	   
-	    
-		
-		return null;
 	}
 
 	public CompletableFuture<List<? extends Location>> references(ReferenceParams params) {
 		
 		DocumentText documentText= documents.get(params.getTextDocument().getUri());
 	    TextDocumentModel textDocumentModel= documentText.getTextDocumentModel();
-		// TODO Auto-generated method stub
-		return null;
+	    int line = params.getPosition().getLine();
+	    int column = params.getPosition().getCharacter();
+	    return computeAsync((cc) -> {
+			try {
+				return textDocumentModel.findReferencesOf(line,column);
+			} catch (CoreException e) {
+				return null;
+			}
+		});
+		
 	}
 
 	public CompletableFuture<List<? extends DocumentHighlight>> documentHighlight(TextDocumentPositionParams position) {
@@ -213,6 +224,7 @@ public class ImplTextDocumentService implements TextDocumentService {
 					DocumentText documentText = new DocumentText(url,change.getText());
 					documents.put(url, documentText);
 				} catch (JavaModelException e) {
+					
 				}
 				
 			}
