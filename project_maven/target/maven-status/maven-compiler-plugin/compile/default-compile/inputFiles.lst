@@ -1,6 +1,7 @@
-/Users/saravidinha/Desktop/project eclipse/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/ImplWorkspaceService.java
-/Users/saravidinha/Desktop/project eclipse/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/ImplTextDocumentService.java
-/Users/saravidinha/Desktop/project eclipse/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/TextDocumentModel.java
-/Users/saravidinha/Desktop/project eclipse/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/App.java
-/Users/saravidinha/Desktop/project eclipse/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/LanguageClient.java
-/Users/saravidinha/Desktop/project eclipse/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/ImplLanguageServer.java
+/Users/sarasantos/Documents/GitHub/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/LanguageClient.java
+/Users/sarasantos/Documents/GitHub/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/ImplWorkspaceService.java
+/Users/sarasantos/Documents/GitHub/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/App.java
+/Users/sarasantos/Documents/GitHub/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/ImplTextDocumentService.java
+/Users/sarasantos/Documents/GitHub/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/JavaLanguageServerLauncher.java
+/Users/sarasantos/Documents/GitHub/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/TextDocumentModel.java
+/Users/sarasantos/Documents/GitHub/Che-JavaPlugins/project_maven/src/main/java/com/mycompany/app/ImplLanguageServer.java

@@ -7,6 +7,8 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
@@ -19,9 +21,19 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.MethodDeclarationMatch;
+import org.eclipse.lsp4j.DidOpenTextDocumentParams;
+import org.eclipse.lsp4j.Hover;
+import org.eclipse.lsp4j.InitializeParams;
+import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.TextDocumentIdentifier;
+import org.eclipse.lsp4j.TextDocumentItem;
+import org.eclipse.lsp4j.TextDocumentPositionParams;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
 import org.eclipse.lsp4j.launch.LSPLauncher;
 import org.eclipse.lsp4j.services.LanguageServer;
+
+import junit.framework.Assert;
+
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -134,6 +146,15 @@ public class App {
 	//
 	public static void main(String[] args) throws URISyntaxException, IOException, JavaModelException {
 
+		ImplLanguageServer server = new ImplLanguageServer();
+		try {
+			checkHover(server);
+		} catch (ExecutionException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		String path = "teste.java";
 
 		List<String> lines = Files.readAllLines(Paths.get(path));
@@ -147,6 +168,27 @@ public class App {
 
 	}
 
+static String fileContent = "class  Teste{\n int number;\n Teste() {\n number = 5;\n}\n}";
+	
+	public static void checkHover(LanguageServer languageServer) throws IOException, InterruptedException, ExecutionException {
+		languageServer.initialize(new InitializeParams());
+		TextDocumentItem doc = new TextDocumentItem();
+		File file = File.createTempFile("file", ".java");
+		file.deleteOnExit();
+		doc.setUri(file.toURI().toString());
+		doc.setText(fileContent);
+		languageServer.getTextDocumentService().didOpen(new DidOpenTextDocumentParams(doc, doc.getText()));
+		
+		TextDocumentIdentifier id = new TextDocumentIdentifier(doc.getUri());
+		CompletableFuture<Hover> hover = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(id, doc.getUri(), new Position(3, 2)));
+		Assert.assertEquals("Verte", hover.get().getContents().get(0).getLeft());
+		
+		hover = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(id, doc.getUri(), new Position(0, 0)));
+		Assert.assertEquals("Verte", hover.get().getContents().get(0).getLeft());
+	}
+	
+	
+	
 	public static void parse(String str) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(str.toCharArray());

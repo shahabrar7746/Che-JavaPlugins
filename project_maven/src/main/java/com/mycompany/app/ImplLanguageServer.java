@@ -44,8 +44,7 @@ public class ImplLanguageServer implements LanguageServer {
 	}
 
 	public TextDocumentService getTextDocumentService() {
-		// TODO Auto-generated method stub
-		return null;
+		return textService;
 	}
 
 	public WorkspaceService getWorkspaceService() {

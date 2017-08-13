@@ -1,12 +1,10 @@
 com/mycompany/app/DocumentText.class
-com/mycompany/app/TextDocumentModel$MethodsDefinition.class
 com/mycompany/app/App.class
 com/mycompany/app/ImplWorkspaceService.class
 com/mycompany/app/ImplLanguageServer.class
-com/mycompany/app/TextDocumentModel$UndefinedContent.class
-com/mycompany/app/TextDocumentModel$TextLine.class
 com/mycompany/app/LanguageClient.class
-com/mycompany/app/TextDocumentModel$VariableDefinition.class
+com/mycompany/app/TextDocumentModel$1.class
 com/mycompany/app/ImplTextDocumentService.class
 com/mycompany/app/TextDocumentModel.class
-com/mycompany/app/TextDocumentModel$ClassDefinition.class
+com/mycompany/app/App$1.class
+com/mycompany/app/JavaLanguageServerLauncher.class

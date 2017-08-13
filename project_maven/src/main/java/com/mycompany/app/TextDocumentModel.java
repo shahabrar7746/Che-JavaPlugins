@@ -1,21 +1,30 @@
 package com.mycompany.app;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import javax.swing.text.BadLocationException;
 
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.CompletionProposal;
 import org.eclipse.jdt.core.IBuffer;
@@ -35,6 +44,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.SourceRange;
 import org.eclipse.jdt.core.ToolFactory;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
@@ -43,6 +53,7 @@ import org.eclipse.jdt.core.search.SearchParticipant;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jdt.core.util.ClassFileBytesDisassembler;
+import org.eclipse.jdt.internal.ui.search.OccurrencesFinder;
 import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jdt.ui.JavadocContentAccess;
 import org.eclipse.jdt.ui.text.java.CompletionProposalCollector;
@@ -51,6 +62,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionList;
+import org.eclipse.lsp4j.DocumentHighlight;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.Location;
 import org.eclipse.lsp4j.MarkedString;
@@ -58,6 +70,20 @@ import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.Range;
 import org.eclipse.lsp4j.TextDocumentPositionParams;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
+import org.eclipse.osgi.internal.framework.BundleContextImpl;
+import org.eclipse.osgi.internal.framework.EquinoxContainer;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceFactory;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceObjects;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 import com.google.common.io.CharStreams;
 
@@ -83,7 +109,7 @@ public class TextDocumentModel {
 
 	public TextDocumentModel(String uri) throws JavaModelException {
 		this.uri = uri;
-
+		
 		IFile[] resources = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(URI.create(uri));
 
 		IJavaElement element = JavaCore.create(resources[0]);
@@ -442,5 +468,18 @@ public class TextDocumentModel {
 
 		return locations;
 	}
+//	public List<? extends DocumentHighlight> getHighlight(int line,int column ){
+//		ITypeRoot typeRoot = (ITypeRoot) compilationUnit;
+//		
+//		
+//		int offset = getOffset(line, column);
+//		OccurrencesFinder finder = new OccurrencesFinder();
+//		CompilationUnit ast = SharedASTProvider.getInstance().getAST(unit, new NullProgressMonitor());
+//
+//
+//		
+//		
+//		return null;
+//	}
 
 }
