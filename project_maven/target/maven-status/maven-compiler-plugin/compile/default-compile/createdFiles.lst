@@ -1,3 +1,4 @@
+com/mycompany/app/JavaLanguageServerPlugin.class
 com/mycompany/app/DocumentText.class
 com/mycompany/app/App.class
 com/mycompany/app/ImplWorkspaceService.class
@@ -5,6 +6,7 @@ com/mycompany/app/ImplLanguageServer.class
 com/mycompany/app/LanguageClient.class
 com/mycompany/app/TextDocumentModel$1.class
 com/mycompany/app/ImplTextDocumentService.class
+com/mycompany/app/ProjectsManager.class
 com/mycompany/app/TextDocumentModel.class
 com/mycompany/app/App$1.class
 com/mycompany/app/JavaLanguageServerLauncher.class

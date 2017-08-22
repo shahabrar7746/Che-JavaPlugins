@@ -10,17 +10,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IClassFile;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.search.MethodDeclarationMatch;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.InitializeParams;
@@ -28,11 +18,8 @@ import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.TextDocumentIdentifier;
 import org.eclipse.lsp4j.TextDocumentItem;
 import org.eclipse.lsp4j.TextDocumentPositionParams;
-import org.eclipse.lsp4j.jsonrpc.Launcher;
-import org.eclipse.lsp4j.launch.LSPLauncher;
 import org.eclipse.lsp4j.services.LanguageServer;
 
-import junit.framework.Assert;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -146,25 +133,25 @@ public class App {
 	//
 	public static void main(String[] args) throws URISyntaxException, IOException, JavaModelException {
 
-		ImplLanguageServer server = new ImplLanguageServer();
-		try {
-			checkHover(server);
-		} catch (ExecutionException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		String path = "teste.java";
-
-		List<String> lines = Files.readAllLines(Paths.get(path));
-
-		String content = "";
-		for (String line : lines) {
-			content += line + "\n";
-		}
-
-		parse(content);
+//		ImplLanguageServer server = new ImplLanguageServer();
+//		try {
+//			checkHover(server);
+//		} catch (ExecutionException | InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		
+//		String path = "teste.java";
+//
+//		List<String> lines = Files.readAllLines(Paths.get(path));
+//
+//		String content = "";
+//		for (String line : lines) {
+//			content += line + "\n";
+//		}
+//
+//		parse(content);
 
 	}
 
@@ -181,10 +168,10 @@ static String fileContent = "class  Teste{\n int number;\n Teste() {\n number = 
 		
 		TextDocumentIdentifier id = new TextDocumentIdentifier(doc.getUri());
 		CompletableFuture<Hover> hover = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(id, doc.getUri(), new Position(3, 2)));
-		Assert.assertEquals("Verte", hover.get().getContents().get(0).getLeft());
+		//Assert.assertEquals("Verte", hover.get().getContents().get(0).getLeft());
 		
 		hover = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(id, doc.getUri(), new Position(0, 0)));
-		Assert.assertEquals("Verte", hover.get().getContents().get(0).getLeft());
+	//	Assert.assertEquals("Verte", hover.get().getContents().get(0).getLeft());
 	}
 	
 	
@@ -733,6 +720,7 @@ static String fileContent = "class  Teste{\n int number;\n Teste() {\n number = 
 
 		});
 		// use ASTParse to parse string
+		
 	}
 
 }

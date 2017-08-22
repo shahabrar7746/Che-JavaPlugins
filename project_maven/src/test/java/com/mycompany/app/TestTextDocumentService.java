@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.InitializeParams;
@@ -14,6 +15,9 @@ import org.eclipse.lsp4j.TextDocumentItem;
 import org.eclipse.lsp4j.TextDocumentPositionParams;
 import org.eclipse.lsp4j.services.LanguageServer;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 import junit.framework.Assert;
 
@@ -40,8 +44,10 @@ public class TestTextDocumentService {
 	
 
 	@Test
-	public void checkHoverLocal() throws IOException, InterruptedException, ExecutionException {
-		checkHover(new ImplLanguageServer());
+	public void checkHoverLocal() throws Exception {
+		//get language server from JavaLanguageServerPlugin
+		JavaLanguageServerPlugin.INSTACE.start(null);
+		checkHover(JavaLanguageServerPlugin.INSTACE.getLanguageServer());
 	}
 
 

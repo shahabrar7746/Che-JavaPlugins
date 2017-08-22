@@ -18,7 +18,7 @@
   <groupId>junit</groupId> 
   <artifactId>junit-dep</artifactId>
   <version>4.8.2</version>
-  
+  <scope>TestTextDocumentService</scope>
 </dependency>
     <!-- https://mvnrepository.com/artifact/org.eclipse.lsp4j/org.eclipse.lsp4j -->
 <dependency>
