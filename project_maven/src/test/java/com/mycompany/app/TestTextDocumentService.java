@@ -5,7 +5,19 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.ui.packageview.PackageFragmentRootContainer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.InitializeParams;
@@ -14,6 +26,9 @@ import org.eclipse.lsp4j.TextDocumentIdentifier;
 import org.eclipse.lsp4j.TextDocumentItem;
 import org.eclipse.lsp4j.TextDocumentPositionParams;
 import org.eclipse.lsp4j.services.LanguageServer;
+import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.internal.Workbench;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -45,10 +60,42 @@ public class TestTextDocumentService {
 
 	@Test
 	public void checkHoverLocal() throws Exception {
-		//get language server from JavaLanguageServerPlugin
+
 		JavaLanguageServerPlugin.INSTACE.start(null);
+
+		JavaLanguageServerPlugin.INSTACE.getProjectsManager().initializeProjects(null, new NullProgressMonitor());
+		
 		checkHover(JavaLanguageServerPlugin.INSTACE.getLanguageServer());
+		
+
 	}
 
+	
+	public static IProject getCurrentProject(){    
+        ISelectionService selectionService =     
+            Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();    
+
+        ISelection selection = selectionService.getSelection();    
+
+        IProject project = null;    
+        if(selection instanceof IStructuredSelection) {    
+            Object element = ((IStructuredSelection)selection).getFirstElement();    
+
+            if (element instanceof IResource) {    
+                project= ((IResource)element).getProject();    
+            } else if (element instanceof PackageFragmentRootContainer) {    
+                IJavaProject jProject =     
+                    ((PackageFragmentRootContainer)element).getJavaProject();    
+                project = jProject.getProject();    
+            } else if (element instanceof IJavaElement) {    
+                IJavaProject jProject= ((IJavaElement)element).getJavaProject();    
+                project = jProject.getProject();    
+            }    
+        }     
+        return project;    
+    }
+	
+	
+	
 
 }

@@ -1,47 +1,63 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.mycompany.app</groupId>
-  <artifactId>project_maven</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>project_maven</name>
-  <url>http://maven.apache.org</url>
-  
-  <properties>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
-</properties>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.mycompany.app</groupId>
+	<artifactId>project_maven</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>project_maven</name>
+	<url>http://maven.apache.org</url>
 
-  <dependencies>
-    <dependency>
-  <groupId>junit</groupId> 
-  <artifactId>junit-dep</artifactId>
-  <version>4.8.2</version>
-  <scope>TestTextDocumentService</scope>
-</dependency>
-    <!-- https://mvnrepository.com/artifact/org.eclipse.lsp4j/org.eclipse.lsp4j -->
-<dependency>
-    <groupId>org.eclipse.lsp4j</groupId>
-    <artifactId>org.eclipse.lsp4j</artifactId>
-    <version>0.2.0</version>
-</dependency>
-    
-    <dependency>
-    <groupId>org.eclipse.jdt</groupId>
-    <artifactId>org.eclipse.jdt.core</artifactId>
-    <version>3.12.3</version>
-    
-</dependency>
+	<properties>
+		<tycho-version>1.0.0</tycho-version>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+	</properties>
 
-<!-- https://mvnrepository.com/artifact/org.eclipse.jdt/ui -->
-<dependency>
-    <groupId>org.eclipse.jdt</groupId>
-    <artifactId>ui</artifactId>
-    <version>3.3.0-v20070607-0010</version>
-    
-</dependency>
 
-  </dependencies>  
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit-dep</artifactId>
+			<version>4.8.2</version>
+			<scope>TestTextDocumentService</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.eclipse.lsp4j/org.eclipse.lsp4j -->
+		<dependency>
+			<groupId>org.eclipse.lsp4j</groupId>
+			<artifactId>org.eclipse.lsp4j</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>org.eclipse.jdt.core</artifactId>
+			<version>3.12.3</version>
+
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.eclipse.jdt/ui -->
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>ui</artifactId>
+			<version>3.3.0-v20070607-0010</version>
+
+		</dependency>
+
+
+
+
+	</dependencies>
 </project>
 
