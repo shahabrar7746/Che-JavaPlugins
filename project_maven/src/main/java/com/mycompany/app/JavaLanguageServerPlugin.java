@@ -2,13 +2,15 @@ package com.mycompany.app;
 
 import java.util.Hashtable;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.lsp4j.services.LanguageServer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import com.google.gson.JsonSyntaxException;
 
 public class JavaLanguageServerPlugin implements BundleActivator {
 
@@ -72,24 +74,32 @@ public class JavaLanguageServerPlugin implements BundleActivator {
 		return this.languageServer;
 	}
 
-	public  void logException(String message, Exception e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void logInfo(String string) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public PreferenceManager getPreferencesManager() {
-			return preferenceManager ;
-
-	}
-
 	public void log(IStatus status) {
-		// TODO Auto-generated method stub
-		
+		if ( bundleContext != null) {
+			Platform.getLog(bundleContext.getBundle()).log(status);
+		}
+	}
+
+	public void log(CoreException e) {
+		log(e.getStatus());
+	}
+
+	public void logError(String message) {
+		if (bundleContext != null) {
+			log(new Status(IStatus.ERROR, bundleContext.getBundle().getSymbolicName(), message));
+		}
+	}
+
+	public void logInfo(String message) {
+		if (bundleContext != null) {
+			log(new Status(IStatus.INFO, bundleContext.getBundle().getSymbolicName(), message));
+		}
+	}
+
+	public void logException(String message, Throwable ex) {
+		if (bundleContext != null) {
+			log(new Status(IStatus.ERROR, bundleContext.getBundle().getSymbolicName(), message, ex));
+		}
 	}
 
 	
